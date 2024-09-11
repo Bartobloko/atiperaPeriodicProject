@@ -1,4 +1,4 @@
-import { afterNextRender, AfterViewInit, Component, ViewChild } from '@angular/core';
+import { afterNextRender, AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -42,24 +42,26 @@ export class TableComponent implements AfterViewInit{
   
   constructor(
     public dialog: MatDialog,
-    private fetchTableDataService: FetchTableDataService
+    private fetchTableDataService: FetchTableDataService,
+    private cdr: ChangeDetectorRef,
   ) {
     afterNextRender(() => {
 
       this.fetchTableDataService.getTableElements().subscribe({
           next: (data) => {
-            // Set loading state if needed
             setTimeout(() => {
               this.tabelData.data = [...data];
               this.tabelData.sort = this.sort;
               this.isLoading = false;
-            }, 1000); // Delay data assignment
+              console.log(data, this.isLoading);
+              this.cdr.detectChanges();
+            }, 1000); 
           },
           error: (error: any) => {
               this.isLoading = false;
           },
       });
-    });
+  });
   }
 
   ngOnInit() {
