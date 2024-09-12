@@ -8,7 +8,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { FromPopupComponent } from '../from-popup/from-popup.component';
+import { FormPopupComponent } from '../form-popup/form-popup.component';
 import { FetchTableDataService } from '../shared/services/fetch-table-data.service';
 import { PeriodicElement } from '../shared/interfaces/periodic-element';
 
@@ -37,7 +37,8 @@ export class TableComponent implements AfterViewInit{
 
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol','actions'];
 
-  tabelData = new MatTableDataSource<PeriodicElement>([]);
+  
+  tableData = new MatTableDataSource<PeriodicElement>([]);
   isLoading = true;
   
   constructor(
@@ -46,12 +47,11 @@ export class TableComponent implements AfterViewInit{
     private cdr: ChangeDetectorRef,
   ) {
     afterNextRender(() => {
-
       this.fetchTableDataService.getTableElements().subscribe({
           next: (data) => {
             setTimeout(() => {
-              this.tabelData.data = [...data];
-              this.tabelData.sort = this.sort;
+              this.tableData.data = [...data];
+              this.tableData.sort = this.sort;
               this.isLoading = false;
               console.log(data, this.isLoading);
               this.cdr.detectChanges();
@@ -64,22 +64,17 @@ export class TableComponent implements AfterViewInit{
   });
   }
 
-  ngOnInit() {
-  
-  }
-
   ngAfterViewInit(): void {
-    
     this.searchSubject.pipe(
       debounceTime(2000) 
     ).subscribe(filterValue => {
-      this.tabelData.filter = filterValue.trim().toLowerCase();
+      this.tableData.filter = filterValue.trim().toLowerCase();
     });
 
   }
 
   openEditDialog(element: any): void {
-    const dialogRef = this.dialog.open(FromPopupComponent, {
+    const dialogRef = this.dialog.open(FormPopupComponent, {
       data: { ...element } 
     });
 
@@ -91,11 +86,11 @@ export class TableComponent implements AfterViewInit{
   }
 
   updateRowData(updatedRow: any): void {
-    const index = this.tabelData.data.findIndex(row => row.position === updatedRow.position);
+    const index = this.tableData.data.findIndex(row => row.position === updatedRow.position);
     if (index !== -1) {
-      const updatedData = [...this.tabelData.data];
+      const updatedData = [...this.tableData.data];
       updatedData[index] = updatedRow;
-      this.tabelData.data = updatedData;
+      this.tableData.data = updatedData;
     }
   }
 

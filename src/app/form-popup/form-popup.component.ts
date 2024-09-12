@@ -6,17 +6,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-from-popup',
+  selector: 'app-form-popup',
   standalone: true,
   imports: [MatInputModule, MatFormFieldModule, MatButtonModule, ReactiveFormsModule],
-  templateUrl: './from-popup.component.html',
-  styleUrl: './from-popup.component.scss'
+  templateUrl: './form-popup.component.html',
+  styleUrl: './form-popup.component.scss'
 })
-export class FromPopupComponent {
+export class FormPopupComponent {
   form: FormGroup;
 
   constructor(
-    public dialogRef: MatDialogRef<FromPopupComponent>,
+    public dialogRef: MatDialogRef<FormPopupComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = new FormGroup({

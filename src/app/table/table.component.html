@@ -4,7 +4,7 @@
         <mat-label>Search...</mat-label>
         <input matInput (keyup)="applyFilter($event)">
     </mat-form-field>      
-    <table mat-table [dataSource]="tabelData" matSort class="mat-elevation-z8">
+    <table mat-table [dataSource]="tableData" matSort class="mat-elevation-z8">
     
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Number </th>
