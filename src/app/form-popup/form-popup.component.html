@@ -7,7 +7,7 @@
 
         <mat-form-field>
             <mat-label>Number</mat-label>
-            <input matInput formControlName="position">
+            <input matInput formControlName="position" type="number">
             @if(form.get('position')?.invalid && form.get('position')?.touched) {
                 <mat-error>
                     Number is required.
@@ -27,7 +27,7 @@
     
         <mat-form-field>
             <mat-label>Weight</mat-label>
-            <input matInput formControlName="weight">
+            <input matInput formControlName="weight" type="number">
             @if( form.get('weight')?.invalid && form.get('weight')?.touched) {
                 <mat-error>
                     Weight must be a positive number.

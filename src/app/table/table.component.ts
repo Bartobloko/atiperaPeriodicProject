@@ -51,10 +51,9 @@ export class TableComponent implements AfterViewInit{
           next: (data) => {
             setTimeout(() => {
               this.tableData.data = [...data];
-              this.tableData.sort = this.sort;
               this.isLoading = false;
-              console.log(data, this.isLoading);
               this.cdr.detectChanges();
+              this.tableData.sort = this.sort;
             }, 1000); 
           },
           error: (error: any) => {
@@ -73,11 +72,11 @@ export class TableComponent implements AfterViewInit{
 
   }
 
-  openEditDialog(element: any): void {
+  openEditDialog(element: any, index: number): void {
     const dialogRef = this.dialog.open(FormPopupComponent, {
-      data: { ...element } 
+      data: { ...element, index } 
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.updateRowData(result);
@@ -86,13 +85,11 @@ export class TableComponent implements AfterViewInit{
   }
 
   updateRowData(updatedRow: any): void {
-    const index = this.tableData.data.findIndex(row => row.position === updatedRow.position);
-    if (index !== -1) {
-      const updatedData = [...this.tableData.data];
-      updatedData[index] = updatedRow;
-      this.tableData.data = updatedData;
-    }
+    const updatedData = [...this.tableData.data];
+    updatedData[updatedRow.index] = updatedRow; // Używamy przekazanego indeksu
+    this.tableData.data = updatedData;
   }
+  
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();

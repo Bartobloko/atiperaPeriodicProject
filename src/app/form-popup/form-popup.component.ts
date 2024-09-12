@@ -20,9 +20,9 @@ export class FormPopupComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = new FormGroup({
-      position: new FormControl(this.data?.position || 0, [Validators.required]),
+      position: new FormControl(this.data?.position || 0, [Validators.required, Validators.pattern(/^\d+$/)]),
+      weight: new FormControl(this.data?.weight || 0, [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d+)?$/)]),
       name: new FormControl(this.data?.name || '', [Validators.required]),
-      weight: new FormControl(this.data?.weight || 0, [Validators.required, Validators.min(0)]),
       symbol: new FormControl(this.data?.symbol || '', [Validators.required])
     });
   }
@@ -32,7 +32,10 @@ export class FormPopupComponent {
   }
 
   save(): void {
-     this.dialogRef.close(this.form.value);
+    this.dialogRef.close({
+      ...this.form.value,
+      index: this.data.index 
+    });
   }
 
 }
