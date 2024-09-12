@@ -68,7 +68,7 @@ export class TableComponent implements AfterViewInit{
     this.searchSubject.pipe(
       debounceTime(2000) 
     ).subscribe(filterValue => {
-      this.tableData.filter = filterValue.trim().toLowerCase();
+      this.filterValues(filterValue)
     });
   }
 
@@ -94,6 +94,10 @@ export class TableComponent implements AfterViewInit{
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.searchSubject.next(filterValue);
+  }
+
+  filterValues(text: string) {
+    this.tableData.filter = text.trim().toLowerCase();
   }
 
 }
