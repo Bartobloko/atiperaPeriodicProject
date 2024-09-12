@@ -11,6 +11,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormPopupComponent } from '../form-popup/form-popup.component';
 import { FetchTableDataService } from '../shared/services/fetch-table-data.service';
 import { PeriodicElement } from '../shared/interfaces/periodic-element';
+import { PeriodicElementWithIndex } from '../shared/interfaces/periodic-element-with-index';
 
 
 
@@ -56,11 +57,11 @@ export class TableComponent implements AfterViewInit{
               this.tableData.sort = this.sort;
             }, 1000); 
           },
-          error: (error: any) => {
+          error: () => {
               this.isLoading = false;
           },
       });
-  });
+    });
   }
 
   ngAfterViewInit(): void {
@@ -69,10 +70,9 @@ export class TableComponent implements AfterViewInit{
     ).subscribe(filterValue => {
       this.tableData.filter = filterValue.trim().toLowerCase();
     });
-
   }
 
-  openEditDialog(element: any, index: number): void {
+  openEditDialog(element: PeriodicElement, index: number): void {
     const dialogRef = this.dialog.open(FormPopupComponent, {
       data: { ...element, index } 
     });
@@ -84,9 +84,9 @@ export class TableComponent implements AfterViewInit{
     });
   }
 
-  updateRowData(updatedRow: any): void {
+  updateRowData(updatedRow: PeriodicElementWithIndex): void {
     const updatedData = [...this.tableData.data];
-    updatedData[updatedRow.index] = updatedRow; // Używamy przekazanego indeksu
+    updatedData[updatedRow.index] = updatedRow; 
     this.tableData.data = updatedData;
   }
   
