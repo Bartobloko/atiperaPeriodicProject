@@ -9,9 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FormPopupComponent } from '../form-popup/form-popup.component';
-import { FetchTableDataService } from '../shared/services/fetch-table-data.service';
 import { PeriodicElement } from '../shared/interfaces/periodic-element';
 import { PeriodicElementWithIndex } from '../shared/interfaces/periodic-element-with-index';
+import { TableStateService } from '../shared/services/table-state.service';
 
 
 
@@ -44,22 +44,17 @@ export class TableComponent implements AfterViewInit{
   
   constructor(
     public dialog: MatDialog,
-    private fetchTableDataService: FetchTableDataService,
+    private tableStateService: TableStateService,
     private cdr: ChangeDetectorRef,
   ) {
     afterNextRender(() => {
-      this.fetchTableDataService.getTableElements().subscribe({
-          next: (data) => {
-            setTimeout(() => {
-              this.tableData.data = [...data];
-              this.isLoading = false;
-              this.cdr.detectChanges();
-              this.tableData.sort = this.sort;
-            }, 1000); 
-          },
-          error: () => {
-              this.isLoading = false;
-          },
+      this.tableStateService.select().subscribe(tableDataState => {
+        setTimeout(() => {
+          this.tableData.data = [...tableDataState.tableDataItems];
+          this.isLoading = false;
+          this.cdr.detectChanges(); 
+          this.tableData.sort = this.sort;
+        }, 1000); 
       });
     });
   }

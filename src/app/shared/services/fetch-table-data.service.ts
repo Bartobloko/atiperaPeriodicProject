@@ -8,8 +8,8 @@ import { PeriodicElement } from '../interfaces/periodic-element';
 export class FetchTableDataService {
 
   constructor(
-    private httpClient:HttpClient,
-  ) { }
+    private httpClient: HttpClient
+  ) {}
 
   getTableElements() {
     const url = "https://mocki.io/v1/d15923fe-4e55-466e-b35a-3f5d764c17a2";
