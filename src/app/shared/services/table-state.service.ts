@@ -8,18 +8,16 @@ import { FetchTableDataService } from './fetch-table-data.service';
   providedIn: 'root'
 })
 
-export class TableStateService extends RxState<any> {
+export class TableStateService extends RxState<{ tableDataItems: PeriodicElement[] }> {
 
   constructor(private fetchTableDataService: FetchTableDataService) {
     super();
-    this.set({ tableDataItems: {}});
     this.fetchTableData()
   }
 
   fetchTableData(): void {
     this.fetchTableDataService.getTableElements().pipe(
       tap(tableData => {
-        console.log('Raw tableData:', tableData);
         this.set({ tableDataItems: tableData })
       })
     ).subscribe();

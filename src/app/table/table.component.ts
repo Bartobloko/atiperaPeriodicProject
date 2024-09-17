@@ -36,35 +36,32 @@ export class TableComponent implements AfterViewInit{
   @ViewChild(MatSort) sort!: MatSort;
   private searchSubject = new Subject<string>();
 
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol','actions'];
-
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'actions'];
   
   tableData = new MatTableDataSource<PeriodicElement>([]);
   isLoading = true;
-  
+
   constructor(
     public dialog: MatDialog,
     private tableStateService: TableStateService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {
     afterNextRender(() => {
-      this.tableStateService.select().subscribe(tableDataState => {
-        setTimeout(() => {
-          this.tableData.data = [...tableDataState.tableDataItems];
-          this.isLoading = false;
-          this.cdr.detectChanges(); 
-          this.tableData.sort = this.sort;
-        }, 1000); 
+      this.tableStateService.select().pipe(
+        debounceTime(1000)  
+      ).subscribe(tableDataState => {
+        this.tableData.data = [...tableDataState.tableDataItems];
+        this.isLoading = false;
+        this.cdr.detectChanges(); 
+        this.tableData.sort = this.sort;
       });
-    });
+    })
   }
 
   ngAfterViewInit(): void {
     this.searchSubject.pipe(
       debounceTime(2000) 
-    ).subscribe(filterValue => {
-      this.filterValues(filterValue)
-    });
+    ).subscribe(filterValue => this.filterValues(filterValue));
   }
 
   openEditDialog(element: PeriodicElement, index: number): void {
@@ -85,13 +82,12 @@ export class TableComponent implements AfterViewInit{
     this.tableData.data = updatedData;
   }
   
-
-  applyFilter(event: Event) {
+  applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.searchSubject.next(filterValue);
   }
 
-  filterValues(text: string) {
+  filterValues(text: string): void {
     this.tableData.filter = text.trim().toLowerCase();
   }
 
