@@ -4,7 +4,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, firstValueFrom, Subject } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -47,6 +47,7 @@ export class TableComponent implements AfterViewInit{
     private cdr: ChangeDetectorRef
   ) {
     afterNextRender(() => {
+      this.tableStateService.fetchTableData();
       this.tableStateService.select().pipe(
         debounceTime(1000)  
       ).subscribe(tableDataState => {
@@ -64,16 +65,16 @@ export class TableComponent implements AfterViewInit{
     ).subscribe(filterValue => this.filterValues(filterValue));
   }
 
-  openEditDialog(element: PeriodicElement, index: number): void {
+  async openEditDialog(element: PeriodicElement, index: number): Promise<void> {
     const dialogRef = this.dialog.open(FormPopupComponent, {
-      data: { ...element, index } 
+      data: { ...element, index }
     });
   
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.updateRowData(result);
-      }
-    });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+  
+    if (result) {
+      this.updateRowData(result);
+    }
   }
 
   updateRowData(updatedRow: PeriodicElementWithIndex): void {

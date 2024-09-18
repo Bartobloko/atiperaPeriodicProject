@@ -12,7 +12,6 @@ export class TableStateService extends RxState<{ tableDataItems: PeriodicElement
 
   constructor(private fetchTableDataService: FetchTableDataService) {
     super();
-    this.fetchTableData()
   }
 
   fetchTableData(): void {
